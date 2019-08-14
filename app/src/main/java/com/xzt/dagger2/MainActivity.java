@@ -11,6 +11,9 @@ import org.w3c.dom.Text;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.inject.Provider;
+
+import dagger.Lazy;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "PhotoUtil";
@@ -20,18 +23,23 @@ public class MainActivity extends AppCompatActivity {
     //PhotoUtil photoUtil;
     //@Inject
     //PhotoClsManager photoClsManager;
+
+
     @Inject
     PhotoUp photoUp;
 
     String photoUrl = "android/xxx.com/1123.jpg";
 
 
+    //Lazy声明方式
     @Inject
     @Named(value = "figure")
-    Photo figurePhoto;
+    Lazy<Photo> figurePhoto;
+
+    //Provider声明方式
     @Inject
     @Named(value = "scenery")
-    Photo sceneryPhoto;
+    Provider<Photo> sceneryPhoto;
 
 
 //    @Inject
@@ -60,7 +68,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         tvOne =findViewById(R.id.tvOne);
         //seniroWay();
-        PhotoToTailor();
+        //PhotoToTailor();
+
+        lazyAndProvider();
     }
 
 
@@ -76,8 +86,8 @@ public class MainActivity extends AppCompatActivity {
 //        photoUtil.takePhoto(MainActivity.this);
 //        PhotoComponent.builder().photoMudule(new PhotoMudule(MainActivity.this, photoUrl))
 //                .build().inject(this);
-        //photoClsManager.startMethod();
-        Log.d(TAG, "onCreate:" + photoUp);
+//        photoClsManager.startMethod();
+//        Log.d(TAG, "onCreate:" + photoUp);
     }
 
     /**
@@ -119,5 +129,18 @@ public class MainActivity extends AppCompatActivity {
         Intent intent =new Intent(MainActivity.this,SecondActivity.class);
         startActivity(intent);
 
+    }
+
+    public void lazyAndProvider(){
+
+       PhotoComponent photoComponent =DaggerPhotoComponent.builder().baseComponent(((BaseApplication) getApplication()).getBaseComponent())
+               .photoMudule(new PhotoMudule(MainActivity.this, photoUrl))
+               .build();
+        photoComponent.inject(MainActivity.this);
+
+        Log.d(TAG, "figurePhoto:"+figurePhoto.get());
+        Log.d(TAG, "sceneryPhoto:"+sceneryPhoto.get());
+        Log.d(TAG, "figurePhoto:"+figurePhoto.get());
+        Log.d(TAG, "sceneryPhoto:"+sceneryPhoto.get());
     }
 }

@@ -1,6 +1,7 @@
 package com.xzt.dagger2;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -21,6 +22,8 @@ import dagger.Provides;
 
 @Module //Module 注解类里面的方法专门提供依赖，所以我们定义一个类，用@Module 注解
 public class PhotoMudule {
+
+    private static final String TAG = "PhotoUtil";
 
     Context context;
     String photoUrl;
@@ -55,14 +58,14 @@ public class PhotoMudule {
         return  new Photo("景物图片");
     }
 
-    @CustomeScope
-    @Provides
-    @Named("phototailorbyphoto")
-    public PhotoTailor  photoTailorByPhoto (Photo photo){
-        return new PhotoTailor(photo);
-    }
-
 //    @CustomeScope
+//    @Provides
+//    @Named("phototailorbyphoto")
+//    public PhotoTailor  photoTailorByPhoto (Photo photo){
+//        return new PhotoTailor(photo);
+//    }
+
+    //@CustomeScope
 //    @Provides
 //    public PhotoToTailor getPhotoToTailor(){
 //        return new PhotoToTailor();
@@ -82,13 +85,17 @@ public class PhotoMudule {
 
 
 
+
     /**
      * 获取人物图片对象
      * @return
      */
+    @CustomeScope //这里声明作用域内单例
     @Provides
     @Named("figure")
     public Photo getfigurePhoto(){
+        Log.d(TAG, "调用了module中的getfigurePhoto方法");
+
         Photo photo = new Photo("人物图片");
         return photo;
     }
@@ -97,9 +104,12 @@ public class PhotoMudule {
      * 获取景物图片对象
      * @return
      */
+    @CustomeScope //这里声明作用域内单例
     @Provides
     @Named("scenery")
     public Photo getsceneryPhoto(){
+        Log.d(TAG, "调用了module中的getsceneryPhoto方法");
+
         Photo photo = new Photo("景物图片");
         return photo;
     }
